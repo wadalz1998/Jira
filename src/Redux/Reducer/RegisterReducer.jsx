@@ -2,10 +2,10 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { DOMAIN_BACKEND, TOKENCYBERSOFT } from "../../utils/config";
 import { history } from "../..";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 const initialState = {
   userRegister: {},
-  loading: false,
 };
 
 const RegisterReducer = createSlice({
@@ -15,26 +15,85 @@ const RegisterReducer = createSlice({
     setUserRegister: (state, action) => {
       state.userRegister = action.payload;
     },
-    setLoadingAction: (state, action) => {
-      state.loading = action.payload;
-    },
   },
+
   extraReducers: (builder) => {
+    builder.addCase(userLoginAsync.pending, (state, action) => {
+      Swal.showLoading();
+    });
+
+    builder.addCase(userLoginAsync.fulfilled, (state, action) => {
+      Swal.close();
+      let timerInterval;
+      Swal.fire({
+        title: "Thành công!",
+        text: "Đăng nhập thành công!",
+        icon: "success",
+        timer: 2000,
+        html: "Chuyển Trang Trong <b></b>.",
+        showConfirmButton: false,
+        didOpen: () => {
+          const timer = Swal.getHtmlContainer().querySelector("b");
+          timerInterval = setInterval(() => {
+            const timeLeft = Math.ceil(Swal.getTimerLeft() / 1000);
+            timer.textContent = timeLeft + " seconds";
+          }, 100);
+        },
+        willClose: () => {
+          clearInterval(timerInterval);
+          history.push("/");
+        },
+      });
+    });
+    builder.addCase(userLoginAsync.rejected, (state, action) => {
+      Swal.close();
+      Swal.fire({
+        title: "Lỗi!",
+        text: "Đăng nhập thất bại",
+        icon: "error",
+        confirmButtonText: "Thử lại",
+      });
+    });
     builder.addCase(userRegisterAsync.pending, (state, action) => {
-      state.loading = true;
+      Swal.showLoading();
     });
 
     builder.addCase(userRegisterAsync.fulfilled, (state, action) => {
-      state.loading = false;
+      Swal.close();
+      let timerInterval;
+      Swal.fire({
+        title: "Thành công!",
+        text: "Đăng Ký thành công!",
+        icon: "success",
+        timer: 2000,
+        html: "Chuyển Trang Trong <b></b>.",
+        showConfirmButton: false,
+        didOpen: () => {
+          const timer = Swal.getHtmlContainer().querySelector("b");
+          timerInterval = setInterval(() => {
+            const timeLeft = Math.ceil(Swal.getTimerLeft() / 1000);
+            timer.textContent = timeLeft + " seconds";
+          }, 100);
+        },
+        willClose: () => {
+          clearInterval(timerInterval);
+          history.push("/login");
+        },
+      });
     });
-
     builder.addCase(userRegisterAsync.rejected, (state, action) => {
-      state.loading = false;
+      Swal.close();
+      Swal.fire({
+        title: "Lỗi!",
+        text: "Email đã tồn tại ",
+        icon: "error",
+        confirmButtonText: "Thử lại",
+      });
     });
   },
 });
 
-export const { setUserRegister, setLoadingAction } = RegisterReducer.actions;
+export const { setUserRegister } = RegisterReducer.actions;
 
 export default RegisterReducer.reducer;
 
@@ -51,12 +110,10 @@ export const userLoginAsync = createAsyncThunk(
           Authorization: `Bearer ${TOKENCYBERSOFT}`,
         },
       });
-      dispatch(setLoadingAction(false));
-      localStorage.setItem('user', JSON.stringify(response.data));
-      history.push("/");
+      // Swal.hideLoading();
+      localStorage.setItem("user", JSON.stringify(response.data));
       return response.data;
     } catch (error) {
-      dispatch(setLoadingAction(false));
       return rejectWithValue(error.response.data);
     }
   }
@@ -65,7 +122,6 @@ export const userLoginAsync = createAsyncThunk(
 export const userRegisterAsync = createAsyncThunk(
   "users/register",
   async (dataUserRegister, { dispatch, rejectWithValue }) => {
-    dispatch(setLoadingAction(true));
     try {
       const response = await axios({
         url: `${DOMAIN_BACKEND}/Users/signup`,
@@ -75,11 +131,8 @@ export const userRegisterAsync = createAsyncThunk(
           Authorization: `Bearer ${TOKENCYBERSOFT}`,
         },
       });
-      dispatch(setLoadingAction(false));
-      history.push("/login");
       return response.data;
     } catch (error) {
-      dispatch(setLoadingAction(false));
       return rejectWithValue(error.response.data);
     }
   }

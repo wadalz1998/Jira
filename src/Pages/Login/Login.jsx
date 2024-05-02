@@ -2,11 +2,12 @@ import { useFormik } from "formik";
 import React, { useState } from "react";
 import * as yup from "yup";
 import { NavLink } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { userLoginAsync } from "../../Redux/Reducer/RegisterReducer";
 
 const Login = () => {
   const dispatch = useDispatch();
+
   const formLogin = useFormik({
     initialValues: {
       email: "",
