@@ -100,7 +100,7 @@ export default RegisterReducer.reducer;
 // action thunk
 export const userLoginAsync = createAsyncThunk(
   "users/login",
-  async (dataUserLogin, { dispatch, rejectWithValue }) => {
+  async (dataUserLogin, {  rejectWithValue }) => {
     try {
       const response = await axios({
         url: `${DOMAIN_BACKEND}/Users/signin`,
