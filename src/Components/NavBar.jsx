@@ -12,7 +12,7 @@ const NavBar = () => {
         </div>
       </div>
       <div className='pt-3'>
-        <NavLink className='nav-link link-dark p-2' to={'/'}> <i className="fa-solid fa-server"></i> Cyber Board</NavLink>
+        {/* <NavLink className='nav-link link-dark p-2' to={'/'}> <i className="fa-solid fa-server"></i> Cyber Board</NavLink> */}
         <NavLink className='nav-link link-dark p-2' to={'/project-management'}> <i className="fa-solid fa-gear"></i> Project management</NavLink>
         <NavLink className='nav-link link-dark p-2' to={'/create-project'}> <i className="fa-solid fa-gear"></i> Create Project</NavLink>
       </div>

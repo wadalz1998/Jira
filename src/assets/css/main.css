@@ -1,3 +1,7 @@
+a {
+  text-decoration: none;
+}
+
 .Bg__LoginPage {
   background: linear-gradient(-135deg, #c850c0, #4158d0);
   width: 100%;

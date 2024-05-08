@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getProjectAllAsync } from "../../Redux/Reducer/ProjectManager";
+import { NavLink } from "react-router-dom";
 
 const ProjectManager = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -25,6 +26,7 @@ const ProjectManager = () => {
       )
     );
   }, [searchTerm, arrProjectAll]);
+
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredProjects.slice(
@@ -75,10 +77,40 @@ const ProjectManager = () => {
               currentItems.map((item, index) => (
                 <tr key={index}>
                   <td>{item.id}</td>
-                  <td>{item.alias}</td>
+                  <td>
+                    <NavLink to={`/projects/${item.id}`}>{item.alias}</NavLink>
+                  </td>
                   <td>{item.categoryName}</td>
                   <td>{item.creator.name}</td>
-                  <td>{item.member}</td>
+                  <td>
+                    {item.members && item.members.length > 0
+                      ? item.members.slice(0, 2).map((member, indx) => {
+                          return (
+                            <img
+                              key={indx}
+                              style={{
+                                width: "30px",
+                                height: "30px",
+                                borderRadius: "50%",
+                              }}
+                              src={member.avatar}
+                              alt={member.name}
+                              title={member.name}
+                            />
+                          );
+                        })
+                      : ""}
+                    {item.members && item.members.length > 2 && (
+                      <span
+                        style={{
+                          width: "30px",
+                          height: "30px",
+                        }}
+                      >
+                        +{item.members.length - 2}
+                      </span>
+                    )}
+                  </td>
                   <td>
                     <button className="btn btn-primary">Edit</button>
                     <button className="btn btn-danger">Delete</button>
@@ -102,15 +134,16 @@ const ProjectManager = () => {
               Next
             </button>
             <input
-              // type="number"
               placeholder="Page"
               value={pageInput}
               onChange={handleChangePageInput}
-              style={{ width: "50px", display: "inline-block" ,marginLeft:"5px"}}
+              style={{
+                width: "50px",
+                display: "inline-block",
+                marginLeft: "5px",
+              }}
             />
-            <button onClick={handleGoToPage}>
-              Go
-            </button>
+            <button onClick={handleGoToPage}>Go</button>
           </div>
           <div></div>
         </div>

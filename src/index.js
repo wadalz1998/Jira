@@ -20,6 +20,7 @@ import RequireAuth from "./Pages/Login/RequireAuth";
 import Register from "./Pages/Login/Register";
 import { Provider } from "react-redux";
 import { store } from "./Redux/store";
+import Detail from "./Pages/Detail/Detail";
 export const history = createBrowserHistory();
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
@@ -36,17 +37,20 @@ root.render(
           }
         >
           {/* <Route index element={<RequireAuth><CyberBoard/></RequireAuth>}></Route> */}
-          <Route index element={<CyberBoard />}></Route>
-          <Route
+          <Route index element={<ProjectManager />}></Route>
+          {/* <Route
             path="/project-management"
             element={<ProjectManager />}
-          ></Route>
+          ></Route> */}
           <Route path="/create-project" element={<CreateProject />}></Route>
           <Route path="/releases" element={<Releases />}></Route>
           <Route path="/issues-and-filters" element={<IssuesFilters />}></Route>
           <Route path="/pages" element={<Pages />}></Route>
           <Route path="/reports" element={<Reports />}></Route>
           <Route path="/component" element={<Components />}></Route>
+          <Route path="/projects">
+            <Route path=":id" element={<Detail />}></Route>
+          </Route>
         </Route>
         <Route path="/login" element={<Login />}></Route>
         <Route path="/register" element={<Register />}></Route>

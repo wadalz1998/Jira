@@ -46,7 +46,11 @@ export default ProjectManager.reducer;
 
 export const getProjectAllAsync = createAsyncThunk(
   "ProjectManager/getAllProjects",
-  async (_, { rejectWithValue }) => {
+  async (_, { getState, rejectWithValue }) => {
+    const { arrProjectAll } = getState().ProjectManager;
+    if (arrProjectAll && arrProjectAll.length > 0) {
+      return arrProjectAll;
+    }
     try {
       const response = await axios({
         url: `${DOMAIN_BACKEND}/Project/getAllProject`,
