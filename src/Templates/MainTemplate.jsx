@@ -5,7 +5,7 @@ import { Outlet } from 'react-router-dom'
 
 const MainTemplate = () => {
   return (
-    <div className='row'>
+    <div className='row w-100 h-100'>
       <div className='col-1' id='header' style={{height:'100vh', backgroundColor:'#00152A'}}>
         <Header/>
       </div>

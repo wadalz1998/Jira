@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getProjectAllAsync } from "../../Redux/Reducer/ProjectManager";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import ProjectItem from "./ProjectItem";
 
 const ProjectManager = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -12,6 +13,7 @@ const ProjectManager = () => {
   const [pageInput, setPageInput] = useState("");
 
   const dispatch = useDispatch();
+  
   const getProjectAllApi = async () => {
     const actionThunk = getProjectAllAsync();
     dispatch(actionThunk);
@@ -51,6 +53,8 @@ const ProjectManager = () => {
   const handleChangePageInput = (e) => {
     setPageInput(e.target.value);
   };
+
+
   return (
     <div className="container py-5">
       <h1>Project Manager</h1>
@@ -73,50 +77,7 @@ const ProjectManager = () => {
             </tr>
           </thead>
           <tbody>
-            {currentItems &&
-              currentItems.map((item, index) => (
-                <tr key={index}>
-                  <td>{item.id}</td>
-                  <td>
-                    <NavLink to={`/projects/${item.id}`}>{item.alias}</NavLink>
-                  </td>
-                  <td>{item.categoryName}</td>
-                  <td>{item.creator.name}</td>
-                  <td>
-                    {item.members && item.members.length > 0
-                      ? item.members.slice(0, 2).map((member, indx) => {
-                          return (
-                            <img
-                              key={indx}
-                              style={{
-                                width: "30px",
-                                height: "30px",
-                                borderRadius: "50%",
-                              }}
-                              src={member.avatar}
-                              alt={member.name}
-                              title={member.name}
-                            />
-                          );
-                        })
-                      : ""}
-                    {item.members && item.members.length > 2 && (
-                      <span
-                        style={{
-                          width: "30px",
-                          height: "30px",
-                        }}
-                      >
-                        +{item.members.length - 2}
-                      </span>
-                    )}
-                  </td>
-                  <td>
-                    <button className="btn btn-primary">Edit</button>
-                    <button className="btn btn-danger">Delete</button>
-                  </td>
-                </tr>
-              ))}
+            <ProjectItem currentItems={currentItems} />
           </tbody>
         </table>
         <div className="text-end">

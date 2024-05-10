@@ -100,7 +100,7 @@ export default RegisterReducer.reducer;
 // action thunk
 export const userLoginAsync = createAsyncThunk(
   "users/login",
-  async (dataUserLogin, {  rejectWithValue }) => {
+  async (dataUserLogin, { rejectWithValue }) => {
     try {
       const response = await axios({
         url: `${DOMAIN_BACKEND}/Users/signin`,
@@ -112,6 +112,10 @@ export const userLoginAsync = createAsyncThunk(
       });
       // Swal.hideLoading();
       localStorage.setItem("user", JSON.stringify(response.data));
+      localStorage.setItem(
+        "accessToken",
+        response.data.content.accessToken
+      );
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
