@@ -1,7 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+import "bootstrap/dist/css/bootstrap.min.css";
+
 import "./index.css";
 import "./assets/css/main.css";
+
 import {
   Route,
   Routes,
@@ -49,7 +52,7 @@ root.render(
             element={<ProjectManager />}
           ></Route> */}
           <Route path="/create-project" element={<CreateProject />}></Route>
-          <Route path="/create-task" element={<CreateTask/>}/>
+          <Route path="/create-task" element={<CreateTask />} />
           <Route path="/releases" element={<Releases />}></Route>
           <Route path="/issues-and-filters" element={<IssuesFilters />}></Route>
           <Route path="/pages" element={<Pages />}></Route>

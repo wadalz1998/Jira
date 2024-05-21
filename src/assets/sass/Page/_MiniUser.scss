@@ -1,0 +1,22 @@
+.user-container {
+  display: flex;
+  justify-content: flex-end; 
+  align-items: center; 
+  padding: 10px; 
+}
+
+.avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.avatar-toggle {
+  background: none;
+  border: none;
+  padding: 0;
+}
+.avatar-toggle::after {
+  display: none; /* Ẩn icon dropdown */
+}

@@ -4,6 +4,7 @@ import ProjectManager from "./Reducer/ProjectManager";
 import ProjectDetail from "./Reducer/ProjectDetail";
 import CreateProject from "./Reducer/CreateProject";
 import UpdateProject from "./Reducer/UpdateProject";
+import DeleteProject from "./Reducer/DeleteProject";
 
 export const store = configureStore({
   reducer: {
@@ -12,5 +13,6 @@ export const store = configureStore({
     ProjectDetail: ProjectDetail,
     CreateProject:CreateProject,
     UpdateProject:UpdateProject,
+    DeletedProject:DeleteProject,
   },
 });

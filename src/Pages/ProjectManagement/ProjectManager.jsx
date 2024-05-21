@@ -10,7 +10,7 @@ const ProjectManager = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [pageInput, setPageInput] = useState("");
-  const [sortOrder, setSortOrder] = useState("asc");
+  const [sortOrder, setSortOrder] = useState("desc"); // Khởi tạo với "desc"
 
   const dispatch = useDispatch();
 
