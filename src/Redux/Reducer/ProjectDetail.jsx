@@ -3,7 +3,7 @@ import axios from "axios";
 import { DOMAIN_BACKEND } from "../../utils/config";
 
 const initialState = {
-  projectDetail: null, // Thay đổi thành chữ thường ở đây để thống nhất
+  projectDetail: null, 
   isLoading: false,
   error: null,
 };
@@ -13,7 +13,7 @@ const ProjectDetail = createSlice({
   initialState,
   reducers: {
     setProjectDetail: (state, action) => {
-      state.projectDetail = action.payload; // Thống nhất việc sử dụng chữ thường
+      state.projectDetail = action.payload; 
     },
   },
   extraReducers: (builder) => {
@@ -33,7 +33,7 @@ const ProjectDetail = createSlice({
   },
 });
 
-export const { setProjectDetail } = ProjectDetail.actions; // Khai báo để sử dụng action này
+export const { setProjectDetail } = ProjectDetail.actions;
 
 export default ProjectDetail.reducer;
 

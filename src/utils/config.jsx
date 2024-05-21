@@ -4,7 +4,6 @@ import { jwtDecode } from "jwt-decode";
 
 export const TOKEN = "token";
 export const TOKENCYBERSOFT = 'eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3ht bGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ 9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yM DA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3M iOiJzdHJpbmciLCJuYmYiOjE2MjcyOTAzODYsImV4cCI6M  TYyNzI5Mzk4Nn0.75DGRow- syI7Sl6bmYgKuZ8oaG36fOr0TUWbUwAjtDs.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJzdHJpbmciLCJuYmYiOjE2MjcyOTAzODYsImV4cCI6MTYyNzI5Mzk4Nn0.75DGRow-syI7Sl6bmYgKuZ8oaG36fOr0TUWbUwAjtDs';
-
 export const DOMAIN_BACKEND = "https://jiranew.cybersoft.edu.vn/api";
 // Cau hinh cho cac file dung chung cho he thong
 //  Cau hinh interceptor cho axios (cau hinh cho tat ca request va response khi su dung axios)

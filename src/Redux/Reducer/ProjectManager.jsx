@@ -9,6 +9,21 @@ const initialState = {
   error: null,
 };
 
+export const getProjectAllAsync = createAsyncThunk(
+  "ProjectManager/getAllProjects",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axios({
+        url: `${DOMAIN_BACKEND}/Project/getAllProject`,
+        method: "GET",
+      });
+      return response.data.content;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
 const ProjectManager = createSlice({
   name: "ProjectManager",
   initialState,
@@ -23,7 +38,7 @@ const ProjectManager = createSlice({
         state.loading = true;
         Swal.fire({
           title: "Loading...",
-          onBeforeOpen: () => {
+          didOpen: () => {
             Swal.showLoading();
           },
         });
@@ -36,29 +51,10 @@ const ProjectManager = createSlice({
       .addCase(getProjectAllAsync.rejected, (state, action) => {
         state.error = action.payload;
         state.loading = false;
+        Swal.fire("Error", "Failed to load projects", "error");
       });
   },
 });
 
 export const { setProjectAll } = ProjectManager.actions;
-
 export default ProjectManager.reducer;
-
-export const getProjectAllAsync = createAsyncThunk(
-  "ProjectManager/getAllProjects",
-  async (_, { getState, rejectWithValue }) => {
-    const { arrProjectAll } = getState().ProjectManager;
-    if (arrProjectAll && arrProjectAll.length > 0) {
-      return arrProjectAll;
-    }
-    try {
-      const response = await axios({
-        url: `${DOMAIN_BACKEND}/Project/getAllProject`,
-        method: "GET",
-      });
-      return response.data.content;
-    } catch (error) {
-      return rejectWithValue(error.response.data);
-    }
-  }
-);

@@ -1,47 +1,54 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getProjectAllAsync } from "../../Redux/Reducer/ProjectManager";
-import { NavLink, useNavigate } from "react-router-dom";
 import ProjectItem from "./ProjectItem";
 
 const ProjectManager = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const { arrProjectAll } = useSelector((state) => state.ProjectManager);
-  const [filteredProjects, setFilteredProjects] = useState(arrProjectAll || []);
+  const [filteredProjects, setFilteredProjects] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [pageInput, setPageInput] = useState("");
+  const [sortOrder, setSortOrder] = useState("asc");
 
   const dispatch = useDispatch();
-  
-  const getProjectAllApi = async () => {
-    const actionThunk = getProjectAllAsync();
-    dispatch(actionThunk);
-  };
+
   useEffect(() => {
-    getProjectAllApi();
-  }, []);
+    dispatch(getProjectAllAsync());
+  }, [dispatch]);
+
   useEffect(() => {
-    setFilteredProjects(
-      arrProjectAll.filter((project) =>
-        project.alias.toLowerCase().includes(searchTerm.toLowerCase())
-      )
+    let projects = arrProjectAll.filter((project) =>
+      project.alias.toLowerCase().includes(searchTerm.toLowerCase())
     );
-  }, [searchTerm, arrProjectAll]);
+
+    projects = projects.sort((a, b) => {
+      if (sortOrder === "asc") {
+        return a.id - b.id;
+      } else {
+        return b.id - a.id;
+      }
+    });
+
+    setFilteredProjects(projects);
+  }, [searchTerm, arrProjectAll, sortOrder]);
+
+  const handleSort = () => {
+    setSortOrder((prevOrder) => (prevOrder === "asc" ? "desc" : "asc"));
+  };
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredProjects.slice(
-    indexOfFirstItem,
-    indexOfLastItem
-  );
+  const currentItems = filteredProjects.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(filteredProjects.length / itemsPerPage);
+
   const handlePrevPage = () => {
-    setCurrentPage(currentPage > 1 ? currentPage - 1 : 1);
+    setCurrentPage((prevPage) => (prevPage > 1 ? prevPage - 1 : 1));
   };
 
   const handleNextPage = () => {
-    setCurrentPage(currentPage < totalPages ? currentPage + 1 : totalPages);
+    setCurrentPage((prevPage) => (prevPage < totalPages ? prevPage + 1 : totalPages));
   };
 
   const handleGoToPage = () => {
@@ -50,10 +57,10 @@ const ProjectManager = () => {
       setCurrentPage(pageNumber);
     }
   };
+
   const handleChangePageInput = (e) => {
     setPageInput(e.target.value);
   };
-
 
   return (
     <div className="container py-5">
@@ -68,7 +75,9 @@ const ProjectManager = () => {
         <table className="table">
           <thead>
             <tr>
-              <th>ID</th>
+              <th onClick={handleSort} style={{ cursor: "pointer" }}>
+                ID {sortOrder === "asc" ? "▲" : "▼"}
+              </th>
               <th>Project Name</th>
               <th>Category Name</th>
               <th>Creator</th>
@@ -106,7 +115,6 @@ const ProjectManager = () => {
             />
             <button onClick={handleGoToPage}>Go</button>
           </div>
-          <div></div>
         </div>
       </div>
     </div>

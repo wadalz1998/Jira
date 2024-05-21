@@ -10,8 +10,8 @@ import {
 import { createBrowserHistory } from "history";
 import { Navigate } from "react-router-dom";
 import MainTemplate from "./Templates/MainTemplate";
-import Header from "./Components/Header";
-import CyberBoard from "./Pages/CyberBoard/CyberBoard";
+// import Header from "./Components/Header";
+// import CyberBoard from "./Pages/CyberBoard/CyberBoard";
 import ProjectManager from "./Pages/ProjectManagement/ProjectManager";
 import CreateProject from "./Pages/CreateProject/CreateProject";
 import Releases from "./Pages/Releases/Releases";
@@ -26,6 +26,7 @@ import { Provider } from "react-redux";
 import { store } from "./Redux/store";
 import Detail from "./Pages/Detail/Detail";
 import EditProject from "./Pages/EditProject/EditProject";
+import CreateTask from "./Pages/CreateTask/CreateTask";
 export const history = createBrowserHistory();
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
@@ -48,6 +49,7 @@ root.render(
             element={<ProjectManager />}
           ></Route> */}
           <Route path="/create-project" element={<CreateProject />}></Route>
+          <Route path="/create-task" element={<CreateTask/>}/>
           <Route path="/releases" element={<Releases />}></Route>
           <Route path="/issues-and-filters" element={<IssuesFilters />}></Route>
           <Route path="/pages" element={<Pages />}></Route>

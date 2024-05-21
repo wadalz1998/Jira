@@ -15,6 +15,7 @@ const NavBar = () => {
         {/* <NavLink className='nav-link link-dark p-2' to={'/'}> <i className="fa-solid fa-server"></i> Cyber Board</NavLink> */}
         <NavLink className='nav-link link-dark p-2' to={'/project-management'}> <i className="fa-solid fa-gear"></i> Project management</NavLink>
         <NavLink className='nav-link link-dark p-2' to={'/create-project'}> <i className="fa-solid fa-gear"></i> Create Project</NavLink>
+        <NavLink className='nav-link link-dark p-2' to={'/create-task'}> <i className="fa-solid fa-gear"></i> Create Task</NavLink>
       </div>
       <hr />
       <div className='pt-3'>
