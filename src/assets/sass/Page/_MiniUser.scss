@@ -1,8 +1,8 @@
 .user-container {
   display: flex;
-  justify-content: flex-end; 
-  align-items: center; 
-  padding: 10px; 
+  justify-content: flex-end;
+  align-items: center;
+  padding: 10px;
 }
 
 .avatar {
@@ -10,6 +10,7 @@
   height: 30px;
   border-radius: 50%;
   cursor: pointer;
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
 }
 
 .avatar-toggle {
@@ -17,6 +18,23 @@
   border: none;
   padding: 0;
 }
+
 .avatar-toggle::after {
-  display: none; /* Ẩn icon dropdown */
+  display: none;
+}
+
+.avatar-toggle:hover .avatar {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  transform: scale(1.1);
+}
+.userMini {
+  .btn{
+    &:hover{
+      background-color: white;
+    }
+    &:active{
+      background-color: white;
+    }
+  }
+
 }

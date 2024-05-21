@@ -1,4 +1,3 @@
-@charset "UTF-8";
 a {
   text-decoration: none;
 }
@@ -101,6 +100,7 @@ a {
   height: 30px;
   border-radius: 50%;
   cursor: pointer;
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
 }
 
 .avatar-toggle {
@@ -110,5 +110,33 @@ a {
 }
 
 .avatar-toggle::after {
-  display: none; /* Ẩn icon dropdown */
+  display: none;
+}
+
+.avatar-toggle:hover .avatar {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  transform: scale(1.1);
+}
+
+.userMini .btn:hover {
+  background-color: white;
+}
+.userMini .btn:active {
+  background-color: white;
+}
+
+#taskForm {
+  padding: 0 40px;
+}
+
+.ant-form-item-label {
+  padding: 0 !important;
+}
+
+.time__TrackingTask {
+  height: 35px;
+}
+
+.custom__inputTaskHours {
+  width: 100% !important;
 }/*# sourceMappingURL=main.css.map */

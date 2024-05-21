@@ -1,38 +1,40 @@
-import React, { useState, useEffect } from 'react';
-import { Dropdown } from 'react-bootstrap';
+import React, { useState, useEffect } from "react";
+import { Dropdown } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 
 const User = () => {
   const [user, setUser] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // Lấy dữ liệu user từ localStorage
-    const userData = localStorage.getItem('user');
+    const userData = localStorage.getItem("user");
     if (userData) {
       setUser(JSON.parse(userData));
     }
   }, []);
 
   const handleLogout = () => {
-    // Logic để log out
-    console.log('Logged out');
-    // Bạn có thể xóa dữ liệu người dùng từ localStorage ở đây nếu cần
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('user');
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("user");
     setUser(null);
+    navigate("/login");
   };
 
   const handleProfile = () => {
-    // Logic để đi đến trang profile
-    console.log('Profile page');
+    navigate("/"); 
   };
-console.log(user);
+
   return (
-    <div className="user-container">
+    <div className="user-container userMini">
       {user ? (
         <Dropdown>
-          <Dropdown.Toggle variant="" id="dropdown-basic" className="avatar-toggle">
+          <Dropdown.Toggle
+            variant="primary"
+            id="dropdown-basic"
+            className="avatar-toggle"
+          >
             <img
-              src={user.content.avatar} 
+              src={user.content?.avatar || "/default-avatar.png"} 
               alt="User Avatar"
               className="avatar"
             />

@@ -19,7 +19,6 @@ import ProjectManager from "./Pages/ProjectManagement/ProjectManager";
 import CreateProject from "./Pages/CreateProject/CreateProject";
 import Releases from "./Pages/Releases/Releases";
 import IssuesFilters from "./Pages/IssuesFilters/IssuesFilters";
-import Pages from "./Pages/Pages/Pages";
 import Reports from "./Pages/Reports/Reports";
 import Components from "./Pages/Components/Components";
 import Login from "./Pages/Login/Login";
@@ -29,7 +28,6 @@ import { Provider } from "react-redux";
 import { store } from "./Redux/store";
 import Detail from "./Pages/Detail/Detail";
 import EditProject from "./Pages/EditProject/EditProject";
-import CreateTask from "./Pages/CreateTask/CreateTask";
 export const history = createBrowserHistory();
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
@@ -52,10 +50,8 @@ root.render(
             element={<ProjectManager />}
           ></Route> */}
           <Route path="/create-project" element={<CreateProject />}></Route>
-          <Route path="/create-task" element={<CreateTask />} />
           <Route path="/releases" element={<Releases />}></Route>
           <Route path="/issues-and-filters" element={<IssuesFilters />}></Route>
-          <Route path="/pages" element={<Pages />}></Route>
           <Route path="/reports" element={<Reports />}></Route>
           <Route path="/component" element={<Components />}></Route>
           <Route path="/projects/:id" element={<Detail />} />
