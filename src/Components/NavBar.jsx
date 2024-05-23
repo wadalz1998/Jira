@@ -14,6 +14,15 @@ const NavBar = () => {
     setVisible(false);
   };
 
+  const handleTaskSubmit = (taskData) => {
+    console.log("Task Data: ", taskData);
+    setVisible(false);
+  };
+
+  const handleSubmitClick = () => {
+    document.getElementById("hiddenSubmitButton").click();
+  };
+
   return (
     <div className="container">
       <div className="row p-3">
@@ -37,7 +46,6 @@ const NavBar = () => {
         </div>
       </div>
       <div className="pt-3">
-        {/* <NavLink className='nav-link link-dark p-2' to={'/'}> <i className="fa-solid fa-server"></i> Cyber Board</NavLink> */}
         <NavLink className="nav-link link-dark p-2" to={"/project-management"}>
           <i className="fa-solid fa-gear"></i> Project management
         </NavLink>
@@ -74,8 +82,7 @@ const NavBar = () => {
         title="Create a new task"
         width={720}
         onClose={onClose}
-        open ={visible}
-        styles={{ body: { paddingBottom: 80 } }}
+        open={visible}
         footer={
           <div
             style={{
@@ -85,13 +92,13 @@ const NavBar = () => {
             <Button onClick={onClose} style={{ marginRight: 8 }}>
               Cancel
             </Button>
-            <Button onClick={onClose} type="primary">
+            <Button onClick={handleSubmitClick} type="primary">
               Submit
             </Button>
           </div>
         }
       >
-        <TaskContent />
+        <TaskContent onSubmit={handleTaskSubmit} />
       </Drawer>
     </div>
   );

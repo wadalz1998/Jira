@@ -1,9 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import {
-  Drawer,
-  Button,
   Select,
   Slider,
   Row,
@@ -11,49 +9,77 @@ import {
   Input,
   InputNumber,
   Form as AntForm,
+  Button,
 } from "antd";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  getTaskPriority,
+  getTaskStatus,
+  getTaskType,
+} from "../Redux/Reducer/TaskContentsReducer";
+import { getUserAllAsync } from "../Redux/Reducer/UserReducer";
 
 const { Option } = Select;
 
 const TaskSchema = Yup.object().shape({
-  project: Yup.string().required("Please select a project"),
+  projectId: Yup.string().required("Please select a project"),
   taskName: Yup.string().required("Please enter the task name"),
-  status: Yup.string().required("Please select the status"),
-  priority: Yup.string().required("Please select the priority"),
-  taskType: Yup.string().required("Please select the task type"),
-  assignees: Yup.array()
-    .min(1, "Please select assignees")
-    .required("Please select assignees"),
+  statusId: Yup.string()
+    .required("Please select the status")
+    .matches(/^\d+$/, "Status must be a number"),
+  priorityId: Yup.string()
+    .required("Please select the priority")
+    .matches(/^\d+$/, "Priority must be a number"),
+  typeId: Yup.string()
+    .required("Please select the task type")
+    .matches(/^\d+$/, "Task type must be a number"),
+  // listUserAsign: Yup.array()
+  //   .min(1, "Please select listUserAsign")
+  //   .required("Please select listUserAsign"),
   description: Yup.string().required("Please enter the description"),
 });
 
-const TaskContent = ({ open, onClose }) => {
-  const [estimatedHours, setEstimatedHours] = useState(0);
-  const [spentHours, setSpentHours] = useState(0);
-
+const TaskContent = ({ onSubmit }) => {
+  const dispatch = useDispatch();
+  const { arrProjectAll } = useSelector((state) => state.ProjectManager);
+  const { taskStatus, taskPriority, taskType } = useSelector(
+    (state) => state.TaskContentsReducer
+  );
+  const { arrUser } = useSelector((state) => state.UserReducer);
   const formik = useFormik({
     initialValues: {
-      project: "",
+      listUserAsign: [],
       taskName: "",
-      status: "",
-      priority: "",
-      taskType: "",
-      assignees: [],
-      progress: 0,
       description: "",
+      statusId: "",
+      originalEstimate: 0,
+      timeTrackingSpent: 0,
+      timeTrackingRemaining: 0,
+      projectId: "",
+      typeId: "",
+      priorityId: "",
     },
     validationSchema: TaskSchema,
-    onSubmit: (values) => {
-      console.log("Form values: ", values);
-      onClose();
+    onSubmit: (values, { resetForm }) => {
+      delete values.progress;
+      console.log("TaskContent form values: ", values);
+      onSubmit(values);
+      resetForm();
     },
   });
 
   const handleEditorChange = (content) => {
     formik.setFieldValue("description", content);
   };
+
+  useEffect(() => {
+    dispatch(getTaskStatus());
+    dispatch(getTaskPriority());
+    dispatch(getTaskType());
+    dispatch(getUserAllAsync());
+  }, [dispatch]);
 
   return (
     <form id="taskForm" layout="vertical" onSubmit={formik.handleSubmit}>
@@ -64,27 +90,35 @@ const TaskContent = ({ open, onClose }) => {
             labelCol={{ span: 24 }}
             wrapperCol={{ span: 24 }}
             validateStatus={
-              formik.touched.project && formik.errors.project ? "error" : ""
+              formik.touched.projectId && formik.errors.projectId ? "error" : ""
             }
             help={
-              formik.touched.project && formik.errors.project
-                ? formik.errors.project
+              formik.touched.projectId && formik.errors.projectId
+                ? formik.errors.projectId
                 : ""
             }
           >
             <Select
               name="project"
-              value={formik.values.project}
-              onChange={(value) => formik.setFieldValue("project", value)}
+              value={formik.values.projectId}
+              onChange={(value) => formik.setFieldValue("projectId", value)}
               onBlur={formik.handleBlur}
+              showSearch
+              filterOption={(input, option) =>
+                option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+              }
             >
               <Option value="">Select a project</Option>
-              <Option value="project1">Project 1</Option>
-              <Option value="project2">Project 2</Option>
+              {arrProjectAll.map((category) => (
+                <Option key={category.id} value={category.id}>
+                  {category.projectName}
+                </Option>
+              ))}
             </Select>
           </AntForm.Item>
         </Col>
       </Row>
+
       <Row gutter={16}>
         <Col span={24}>
           <AntForm.Item
@@ -117,24 +151,26 @@ const TaskContent = ({ open, onClose }) => {
             labelCol={{ span: 24 }}
             wrapperCol={{ span: 24 }}
             validateStatus={
-              formik.touched.status && formik.errors.status ? "error" : ""
+              formik.touched.statusId && formik.errors.statusId ? "error" : ""
             }
             help={
-              formik.touched.status && formik.errors.status
-                ? formik.errors.status
+              formik.touched.statusId && formik.errors.statusId
+                ? formik.errors.statusId
                 : ""
             }
           >
             <Select
               name="status"
-              value={formik.values.status}
-              onChange={(value) => formik.setFieldValue("status", value)}
+              value={formik.values.statusId}
+              onChange={(value) => formik.setFieldValue("statusId", value)}
               onBlur={formik.handleBlur}
             >
               <Option value="">Select a status</Option>
-              <Option value="todo">To Do</Option>
-              <Option value="inProgress">In Progress</Option>
-              <Option value="done">Done</Option>
+              {taskStatus?.map((taskStatus) => (
+                <Option key={taskStatus.statusId} value={taskStatus.statusId}>
+                  {taskStatus.statusName}
+                </Option>
+              ))}
             </Select>
           </AntForm.Item>
         </Col>
@@ -147,24 +183,31 @@ const TaskContent = ({ open, onClose }) => {
             labelCol={{ span: 24 }}
             wrapperCol={{ span: 24 }}
             validateStatus={
-              formik.touched.priority && formik.errors.priority ? "error" : ""
+              formik.touched.priorityId && formik.errors.priorityId
+                ? "error"
+                : ""
             }
             help={
-              formik.touched.priority && formik.errors.priority
-                ? formik.errors.priority
+              formik.touched.priorityId && formik.errors.priorityId
+                ? formik.errors.priorityId
                 : ""
             }
           >
             <Select
               name="priority"
-              value={formik.values.priority}
-              onChange={(value) => formik.setFieldValue("priority", value)}
+              value={formik.values.priorityId}
+              onChange={(value) => formik.setFieldValue("priorityId", value)}
               onBlur={formik.handleBlur}
             >
-              <Option value="">Select a priority</Option>
-              <Option value="low">Low</Option>
-              <Option value="medium">Medium</Option>
-              <Option value="high">High</Option>
+              <Option value="">Select a Priority</Option>
+              {taskPriority?.map((taskPriority) => (
+                <Option
+                  key={taskPriority.priorityId}
+                  value={taskPriority.priorityId}
+                >
+                  {taskPriority.priority}
+                </Option>
+              ))}
             </Select>
           </AntForm.Item>
         </Col>
@@ -174,24 +217,26 @@ const TaskContent = ({ open, onClose }) => {
             labelCol={{ span: 24 }}
             wrapperCol={{ span: 24 }}
             validateStatus={
-              formik.touched.taskType && formik.errors.taskType ? "error" : ""
+              formik.touched.typeId && formik.errors.typeId ? "error" : ""
             }
             help={
-              formik.touched.taskType && formik.errors.taskType
-                ? formik.errors.taskType
+              formik.touched.typeId && formik.errors.typeId
+                ? formik.errors.typeId
                 : ""
             }
           >
             <Select
               name="taskType"
-              value={formik.values.taskType}
-              onChange={(value) => formik.setFieldValue("taskType", value)}
+              value={formik.values.typeId}
+              onChange={(value) => formik.setFieldValue("typeId", value)}
               onBlur={formik.handleBlur}
             >
-              <Option value="">Select a task type</Option>
-              <Option value="bug">Bug</Option>
-              <Option value="feature">Feature</Option>
-              <Option value="task">Task</Option>
+              <Option value="">Select a Task Type</Option>
+              {taskType?.map((taskType) => (
+                <Option key={taskType.id} value={taskType.id}>
+                  {taskType.taskType}
+                </Option>
+              ))}
             </Select>
           </AntForm.Item>
         </Col>
@@ -200,39 +245,48 @@ const TaskContent = ({ open, onClose }) => {
       <Row gutter={16}>
         <Col span={24}>
           <AntForm.Item
-            label="Assignees"
+            label="Assigners"
             labelCol={{ span: 24 }}
             wrapperCol={{ span: 24 }}
             validateStatus={
-              formik.touched.assignees && formik.errors.assignees ? "error" : ""
+              formik.touched.listUserAsign && formik.errors.listUserAsign
+                ? "error"
+                : ""
             }
             help={
-              formik.touched.assignees && formik.errors.assignees
-                ? formik.errors.assignees
+              formik.touched.listUserAsign && formik.errors.listUserAsign
+                ? formik.errors.listUserAsign
                 : ""
             }
           >
             <Select
               mode="multiple"
-              name="assignees"
-              value={formik.values.assignees}
-              onChange={(value) => formik.setFieldValue("assignees", value)}
+              name="listUserAsign"
+              value={formik.values.listUserAsign}
+              onChange={(value) => formik.setFieldValue("listUserAsign", value)}
               onBlur={formik.handleBlur}
+              showSearch
+              filterOption={(input, option) =>
+                option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+              }
             >
-              <Option value="user1">User 1</Option>
-              <Option value="user2">User 2</Option>
+              <Option value="">Select a User</Option>
+              {arrUser?.map((user) => (
+                <Option key={user.userId} value={user.userId}>
+                  {user.name}
+                </Option>
+              ))}
             </Select>
           </AntForm.Item>
         </Col>
       </Row>
+
       <Row gutter={16}>
         <Col span={24} className="time__TrackingTask">
-          <AntForm.Item
-            label="Time Tracking"
-            labelCol={{ span: 24 }}
-          ></AntForm.Item>
+          <AntForm.Item label="Time Tracking" labelCol={{ span: 24 }} />
         </Col>
       </Row>
+
       <Row gutter={16} style={{ justifyContent: "space-between" }}>
         <Col span={10}>
           <AntForm.Item
@@ -242,10 +296,16 @@ const TaskContent = ({ open, onClose }) => {
           >
             <div style={{ display: "flex", alignItems: "center" }}>
               <InputNumber
-              className="custom__inputTaskHours"
+                className="custom__inputTaskHours"
                 min={0}
-                value={estimatedHours}
-                onChange={(value) => setEstimatedHours(value)}
+                value={formik.values.originalEstimate}
+                onChange={(value) => {
+                  formik.setFieldValue("originalEstimate", value);
+                  formik.setFieldValue(
+                    "timeTrackingRemaining",
+                    value - formik.values.timeTrackingSpent
+                  );
+                }}
                 style={{ width: 60, textAlign: "center", margin: "0 8px" }}
               />
             </div>
@@ -261,8 +321,14 @@ const TaskContent = ({ open, onClose }) => {
               <InputNumber
                 className="custom__inputTaskHours"
                 min={0}
-                value={spentHours}
-                onChange={(value) => setSpentHours(value)}
+                value={formik.values.timeTrackingSpent}
+                onChange={(value) => {
+                  formik.setFieldValue("timeTrackingSpent", value);
+                  formik.setFieldValue(
+                    "timeTrackingRemaining",
+                    formik.values.originalEstimate - value
+                  );
+                }}
                 style={{ width: 60, textAlign: "center", margin: "0 8px" }}
               />
             </div>
@@ -279,14 +345,27 @@ const TaskContent = ({ open, onClose }) => {
           >
             <Slider
               min={0}
-              max={estimatedHours}
-              value={spentHours}
+              max={formik.values.originalEstimate}
+              value={formik.values.timeTrackingSpent}
               onChange={(value) => {
-                setSpentHours(value);
+                formik.setFieldValue("timeTrackingSpent", value);
+                formik.setFieldValue(
+                  "timeTrackingRemaining",
+                  formik.values.originalEstimate - value
+                );
                 formik.setFieldValue("progress", value);
               }}
             />
           </AntForm.Item>
+        </Col>
+      </Row>
+
+      <Row gutter={16} justify="space-between">
+        <Col span={12}>
+          <p>Hours Spent: {formik.values.timeTrackingSpent}</p>
+        </Col>
+        <Col span={12} style={{ textAlign: "right" }}>
+          <p>Hours Remaining: {formik.values.timeTrackingRemaining}</p>
         </Col>
       </Row>
 
@@ -315,6 +394,14 @@ const TaskContent = ({ open, onClose }) => {
           </AntForm.Item>
         </Col>
       </Row>
+      <Button
+        type="primary"
+        htmlType="submit"
+        style={{ display: "none" }}
+        id="hiddenSubmitButton"
+      >
+        Submit
+      </Button>
     </form>
   );
 };

@@ -26,10 +26,11 @@ const User = () => {
 
   return (
     <div className="user-container userMini">
+      admin
       {user ? (
-        <Dropdown>
+        <Dropdown style={{paddingLeft:"5px"}}>
           <Dropdown.Toggle
-            variant="primary"
+            variant=""
             id="dropdown-basic"
             className="avatar-toggle"
           >
