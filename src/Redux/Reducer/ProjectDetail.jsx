@@ -31,39 +31,54 @@ const ProjectDetail = createSlice({
         state.isLoading = false;
         state.error = action.payload;
       })
-      .addCase(UpdateTaskDetail.pending, (state, action) => {
+      .addCase(UpdateTaskDetail.pending, () => {
         Swal.showLoading();
       })
-      .addCase(UpdateTaskDetail.fulfilled, (state, action) => {
-        Swal.mixin({
+      .addCase(UpdateTaskDetail.fulfilled, () => {
+        Swal.fire({
+          icon: "success",
+          title: "Task updated successfully",
           toast: true,
           position: "top-end",
           showConfirmButton: false,
           timer: 3000,
           timerProgressBar: true,
-          didOpen: (toast) => {
-            toast.addEventListener("mouseenter", Swal.stopTimer);
-            toast.addEventListener("mouseleave", Swal.resumeTimer);
-          },
-        }).fire({
-          icon: "success",
-          title: "Thêm Thành Công",
         });
       })
-      .addCase(UpdateTaskDetail.rejected, (state, action) => {
-        Swal.mixin({
+      .addCase(UpdateTaskDetail.rejected, () => {
+        Swal.fire({
+          icon: "error",
+          title: "Error updating task",
           toast: true,
           position: "top-end",
           showConfirmButton: false,
           timer: 3000,
           timerProgressBar: true,
-          didOpen: (toast) => {
-            toast.addEventListener("mouseenter", Swal.stopTimer);
-            toast.addEventListener("mouseleave", Swal.resumeTimer);
-          },
-        }).fire({
+        });
+      })
+      .addCase(DeleteTaskAsync.fulfilled, (state, action) => {
+        state.projectDetail.lstTask = state.projectDetail.lstTask.filter(
+          (task) => task.taskId !== action.meta.arg
+        );
+        Swal.fire({
+          icon: "success",
+          title: "Task deleted successfully",
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+        });
+      })
+      .addCase(DeleteTaskAsync.rejected, () => {
+        Swal.fire({
           icon: "error",
-          title: "Đã xảy ra lỗi",
+          title: "Error deleting task",
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
         });
       });
   },
@@ -96,6 +111,7 @@ export const getProjectDetailAsync = createAsyncThunk(
     }
   }
 );
+
 export const UpdateTaskDetail = createAsyncThunk(
   "ProjectDetail/UpdateTaskDetail",
   async (data, { rejectWithValue }) => {
@@ -114,6 +130,7 @@ export const UpdateTaskDetail = createAsyncThunk(
     }
   }
 );
+
 export const UpdateUserProjectAsync = createAsyncThunk(
   "ProjectDetail/UpdateUserProjectAsync",
   async (data, { rejectWithValue }) => {
@@ -132,6 +149,7 @@ export const UpdateUserProjectAsync = createAsyncThunk(
     }
   }
 );
+
 export const DeleteUserProjectAsync = createAsyncThunk(
   "ProjectDetail/DeleteUserProjectAsync",
   async (data, { rejectWithValue }) => {
@@ -145,6 +163,37 @@ export const DeleteUserProjectAsync = createAsyncThunk(
         },
       });
       return response.data.content;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const DeleteTaskAsync = createAsyncThunk(
+  "ProjectDetail/DeleteTaskAsync",
+  async (id, { rejectWithValue }) => {
+    try {
+      const result = await Swal.fire({
+        title: "Are you sure?",
+        text: "Do you want to delete this task?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes, delete it!",
+        cancelButtonText: "No, cancel!",
+      });
+
+      if (result.isConfirmed) {
+        const response = await axios({
+          url: `${DOMAIN_BACKEND}/Project/removeTask?taskId=${id}`,
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        });
+        return response.data.content;
+      } else {
+        throw new Error("Task deletion canceled");
+      }
     } catch (error) {
       return rejectWithValue(error.response.data);
     }

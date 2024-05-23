@@ -36,12 +36,12 @@ const ModalDetailTask = ({
   visible,
   onClose,
   task,
-  arrProjectAll,
   taskPriority,
   taskType,
   taskStatus,
   arrUser,
   onSubmit,
+  onDelete,
 }) => {
   const initialValues = task
     ? {
@@ -77,11 +77,16 @@ const ModalDetailTask = ({
     validationSchema: TaskSchema,
     onSubmit: (values, { resetForm }) => {
       onSubmit(values);
-           resetForm();
+      resetForm();
       onClose();
     },
     enableReinitialize: true,
   });
+
+  const handleDelete = () => {
+    onDelete(task.taskId);
+    onClose();
+  };
 
   const handleEditorChange = (value) => {
     formik.setFieldValue("description", value);
@@ -397,7 +402,15 @@ const ModalDetailTask = ({
             </Row>
 
             <Row gutter={16} justify="end">
-              <Button onClick={onClose}>Cancel</Button>
+              <Button
+                key="delete"
+                danger
+                type="primary"
+                onClick={handleDelete}
+                style={{ marginRight: "10px" }}
+              >
+                Delete
+              </Button>
               <Button
                 type="primary"
                 onClick={formik.submitForm}

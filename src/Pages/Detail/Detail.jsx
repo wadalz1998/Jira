@@ -8,6 +8,7 @@ import {
   getProjectDetailAsync,
   UpdateTaskDetail,
   UpdateUserProjectAsync,
+  DeleteTaskAsync,
 } from "../../Redux/Reducer/ProjectDetail";
 import ModalSelectUser from "./ModalSelectUser";
 import ModalDetailTask from "./ModalDetailTask";
@@ -33,6 +34,7 @@ const Detail = () => {
   const [numberToCheckModal, setNumberToCheckModal] = useState(0);
   const [selectedTask, setSelectedTask] = useState(null);
   const [taskDetailVisible, setTaskDetailVisible] = useState(false);
+
   useEffect(() => {
     dispatch(getUserAllAsync());
     dispatch(getProjectDetailAsync(id));
@@ -53,9 +55,16 @@ const Detail = () => {
   const handleCancel = () => {
     setIsModalVisible(false);
   };
+
   const handleUpdateMembers = (id) => {
     dispatch(getProjectDetailAsync(id));
     handleOk();
+  };
+
+  const handleDeleteDetailTask = (taskId) => {
+    dispatch(DeleteTaskAsync(taskId)).then(() => {
+      dispatch(getProjectDetailAsync(id));
+    });
   };
 
   const onDragEnd = async (result) => {
@@ -268,9 +277,8 @@ const Detail = () => {
                                 taskStatus={taskStatus}
                                 taskPriority={taskPriority}
                                 taskType={taskType}
-                                onSubmit={(values) =>
-                                  handleSubmitDetailTask(values)
-                                }
+                                onSubmit={handleSubmitDetailTask}
+                                onDelete={handleDeleteDetailTask}
                               />
                             )}
                           </div>
