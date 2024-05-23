@@ -139,4 +139,17 @@ a {
 
 .custom__inputTaskHours {
   width: 100% !important;
+}
+
+.ant-modal-mask {
+  background-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+.custom__ModalEditDetail {
+  width: 980px !important;
+}
+
+.labelEditTaskInFo label {
+  font-size: 24px !important;
+  font-weight: bold !important;
 }/*# sourceMappingURL=main.css.map */

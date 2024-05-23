@@ -2,8 +2,11 @@ import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { Drawer, Button } from "antd";
 import TaskContent from "./TaskContent";
+import { useDispatch } from "react-redux";
+import { setCreateTask } from "../Redux/Reducer/TaskContentsReducer";
 
 const NavBar = () => {
+  const dispatch = useDispatch();
   const [visible, setVisible] = useState(false);
 
   const showDrawer = () => {
@@ -15,7 +18,7 @@ const NavBar = () => {
   };
 
   const handleTaskSubmit = (taskData) => {
-    console.log("Task Data: ", taskData);
+      dispatch(setCreateTask(taskData))
     setVisible(false);
   };
 

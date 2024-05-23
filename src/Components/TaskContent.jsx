@@ -35,9 +35,6 @@ const TaskSchema = Yup.object().shape({
   typeId: Yup.string()
     .required("Please select the task type")
     .matches(/^\d+$/, "Task type must be a number"),
-  // listUserAsign: Yup.array()
-  //   .min(1, "Please select listUserAsign")
-  //   .required("Please select listUserAsign"),
   description: Yup.string().required("Please enter the description"),
 });
 
@@ -47,6 +44,7 @@ const TaskContent = ({ onSubmit }) => {
   const { taskStatus, taskPriority, taskType } = useSelector(
     (state) => state.TaskContentsReducer
   );
+  
   const { arrUser } = useSelector((state) => state.UserReducer);
   const formik = useFormik({
     initialValues: {
@@ -64,7 +62,6 @@ const TaskContent = ({ onSubmit }) => {
     validationSchema: TaskSchema,
     onSubmit: (values, { resetForm }) => {
       delete values.progress;
-      console.log("TaskContent form values: ", values);
       onSubmit(values);
       resetForm();
     },
@@ -232,11 +229,12 @@ const TaskContent = ({ onSubmit }) => {
               onBlur={formik.handleBlur}
             >
               <Option value="">Select a Task Type</Option>
-              {taskType?.map((taskType) => (
-                <Option key={taskType.id} value={taskType.id}>
-                  {taskType.taskType}
-                </Option>
-              ))}
+              {Array.isArray(taskType) &&
+                taskType.map((taskType) => (
+                  <Option key={taskType.id} value={taskType.id}>
+                    {taskType.taskType}
+                  </Option>
+                ))}
             </Select>
           </AntForm.Item>
         </Col>
