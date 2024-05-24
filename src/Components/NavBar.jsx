@@ -1,12 +1,15 @@
-import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { NavLink, useParams } from "react-router-dom";
 import { Drawer, Button } from "antd";
 import TaskContent from "./TaskContent";
 import { useDispatch } from "react-redux";
 import { setCreateTask } from "../Redux/Reducer/TaskContentsReducer";
+import { getProjectDetailAsync } from "../Redux/Reducer/ProjectDetail";
+import { getProjectAllAsync } from "../Redux/Reducer/ProjectManager";
 
 const NavBar = () => {
   const dispatch = useDispatch();
+  const { id } = useParams();
   const [visible, setVisible] = useState(false);
 
   const showDrawer = () => {
@@ -18,14 +21,20 @@ const NavBar = () => {
   };
 
   const handleTaskSubmit = (taskData) => {
-      dispatch(setCreateTask(taskData))
+    dispatch(setCreateTask(taskData)).then(() => {
+      console.log(id);
+      if (id) dispatch(getProjectDetailAsync(id));
+    });
+
     setVisible(false);
   };
 
   const handleSubmitClick = () => {
     document.getElementById("hiddenSubmitButton").click();
   };
-
+  useEffect(() => {
+    dispatch(getProjectAllAsync());
+  }, []);
   return (
     <div className="container">
       <div className="row p-3">

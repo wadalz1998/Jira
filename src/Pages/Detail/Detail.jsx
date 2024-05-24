@@ -29,6 +29,7 @@ const Detail = () => {
   const { taskStatus, taskPriority, taskType } = useSelector(
     (state) => state.TaskContentsReducer
   );
+  const { arrProjectAll } = useSelector((state) => state.ProjectManager);
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [numberToCheckModal, setNumberToCheckModal] = useState(0);
@@ -41,6 +42,7 @@ const Detail = () => {
     dispatch(getTaskStatus());
     dispatch(getTaskPriority());
     dispatch(getTaskType());
+
   }, [dispatch, id]);
 
   const showModal = () => {

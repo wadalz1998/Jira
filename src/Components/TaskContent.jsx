@@ -21,6 +21,7 @@ import {
 } from "../Redux/Reducer/TaskContentsReducer";
 import { getUserAllAsync } from "../Redux/Reducer/UserReducer";
 
+
 const { Option } = Select;
 
 const TaskSchema = Yup.object().shape({
@@ -40,11 +41,12 @@ const TaskSchema = Yup.object().shape({
 
 const TaskContent = ({ onSubmit }) => {
   const dispatch = useDispatch();
+ 
   const { arrProjectAll } = useSelector((state) => state.ProjectManager);
   const { taskStatus, taskPriority, taskType } = useSelector(
     (state) => state.TaskContentsReducer
   );
-  
+ 
   const { arrUser } = useSelector((state) => state.UserReducer);
   const formik = useFormik({
     initialValues: {
