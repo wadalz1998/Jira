@@ -28,6 +28,8 @@ import { Provider } from "react-redux";
 import { store } from "./Redux/store";
 import Detail from "./Pages/Detail/Detail";
 import EditProject from "./Pages/EditProject/EditProject";
+import UserManager from "./Pages/UserManager/UserManager";
+import EditUserManager from "./Pages/UserManager/EditUserManager";
 export const history = createBrowserHistory();
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
@@ -56,6 +58,9 @@ root.render(
           <Route path="/component" element={<Components />}></Route>
           <Route path="/projects/:id" element={<Detail />} />
           <Route path="/projects/:id/edit" element={<EditProject />} />
+
+          <Route path="/users" element={<UserManager />}></Route>
+          <Route path="/users/:userId/edit" element={<EditUserManager />} />
         </Route>
 
         <Route path="/login" element={<Login />}></Route>

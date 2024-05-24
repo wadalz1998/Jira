@@ -45,10 +45,10 @@ const ProjectDetail = createSlice({
           timerProgressBar: true,
         });
       })
-      .addCase(UpdateTaskDetail.rejected, () => {
+      .addCase(UpdateTaskDetail.rejected, (state, action) => {
         Swal.fire({
           icon: "error",
-          title: "Error updating task",
+          title: `${action.payload.message}`,
           toast: true,
           position: "top-end",
           showConfirmButton: false,

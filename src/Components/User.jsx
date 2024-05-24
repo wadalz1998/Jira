@@ -6,6 +6,7 @@ const User = () => {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
+  const [myCommentInfo, setMyCommentInfo] = useState(null);
   useEffect(() => {
     const userData = localStorage.getItem("user");
     if (userData) {
@@ -21,21 +22,33 @@ const User = () => {
   };
 
   const handleProfile = () => {
-    navigate("/"); 
+    navigate(`/users/${myCommentInfo.id}/edit`);
   };
+  const handleUsrManager = () => {
+    navigate("/users");
+  };
+  useEffect(() => {
+    const userInfo = localStorage.getItem("user");
+    if (userInfo) {
+      const userObject = JSON.parse(userInfo);
+      if (userObject && userObject.content) {
+        setMyCommentInfo(userObject.content);
+      }
+    }
+  }, []);
 
   return (
     <div className="user-container userMini">
       admin
       {user ? (
-        <Dropdown style={{paddingLeft:"5px"}}>
+        <Dropdown style={{ paddingLeft: "5px" }}>
           <Dropdown.Toggle
             variant=""
             id="dropdown-basic"
             className="avatar-toggle"
           >
             <img
-              src={user.content?.avatar || "/default-avatar.png"} 
+              src={user.content?.avatar || "/default-avatar.png"}
               alt="User Avatar"
               className="avatar"
             />
@@ -43,6 +56,9 @@ const User = () => {
 
           <Dropdown.Menu align="end">
             <Dropdown.Item onClick={handleProfile}>Profile</Dropdown.Item>
+            <Dropdown.Item onClick={handleUsrManager}>
+              User Manager
+            </Dropdown.Item>
             <Dropdown.Item onClick={handleLogout}>Log out</Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>

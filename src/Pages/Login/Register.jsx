@@ -32,7 +32,7 @@ const Register = () => {
       phoneNumber: yup
         .string()
         .required("PhoneNumber không được bỏ trống")
-        .matches(/^[0-9]{10}$/, "PhoneNumber Gồm 10 chữ số"),
+        .matches(/^[0-9]{9}$/, "PhoneNumber Gồm 9 chữ số"),
     }),
     onSubmit: (userRegister) => {
       const actionThunk = userRegisterAsync(userRegister);
