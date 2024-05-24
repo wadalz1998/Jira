@@ -7,6 +7,7 @@ import UpdateProject from "./Reducer/UpdateProject";
 import DeleteProject from "./Reducer/DeleteProject";
 import TaskContentsReducer from "./Reducer/TaskContentsReducer";
 import UserReducer from "./Reducer/UserReducer";
+import CommentTaskReducer from "./Reducer/CommentTaskReducer";
 
 export const store = configureStore({
   reducer: {
@@ -18,5 +19,6 @@ export const store = configureStore({
     DeletedProject:DeleteProject,
     TaskContentsReducer:TaskContentsReducer,
     UserReducer:UserReducer,
+    CommentTaskReducer:CommentTaskReducer,
   },
 });

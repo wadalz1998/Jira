@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import {
@@ -11,9 +11,19 @@ import {
   Form as AntForm,
   Button,
   Modal,
+  Avatar,
+  List,
 } from "antd";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import { EditOutlined, DeleteOutlined, CheckOutlined } from "@ant-design/icons";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  deleteCommentTaskAsync,
+  getCommentTaskDetaiCommentlAll,
+  setInsertCommentTask,
+  updateCommentTaskAsync, // Import the update action
+} from "../../Redux/Reducer/CommentTaskReducer";
 
 const { Option } = Select;
 
@@ -43,6 +53,16 @@ const ModalDetailTask = ({
   onSubmit,
   onDelete,
 }) => {
+  const dispatch = useDispatch();
+
+  const [newComment, setNewComment] = useState("");
+  const [editingCommentId, setEditingCommentId] = useState(null);
+  const [editingCommentText, setEditingCommentText] = useState("");
+  const [myCommentInfo, setMyCommentInfo] = useState("");
+  const { arrCommentAll = [] } = useSelector(
+    (state) => state.CommentTaskReducer
+  ); // Khởi tạo arrCommentAll là mảng rỗng
+
   const initialValues = task
     ? {
         listUserAsign: task.assigness.map((user) => user.id) || [],
@@ -92,6 +112,66 @@ const ModalDetailTask = ({
     formik.setFieldValue("description", value);
   };
 
+  const handleAddComment = () => {
+    if (newComment && task?.taskId) {
+      dispatch(
+        setInsertCommentTask({
+          taskId: task.taskId,
+          contentComment: newComment,
+        })
+      ).then(() => {
+        setNewComment("");
+        dispatch(getCommentTaskDetaiCommentlAll(task.taskId));
+      });
+    }
+  };
+
+  const handleEditComment = (comment) => {
+    setEditingCommentId(comment.id);
+    setEditingCommentText(comment.contentComment);
+  };
+
+  const handleSaveEditComment = () => {
+    if (editingCommentText.trim()) {
+      dispatch(
+        updateCommentTaskAsync({
+          id: editingCommentId,
+          contentComment: editingCommentText,
+        })
+      ).then(() => {
+        setEditingCommentId(null);
+        setEditingCommentText("");
+        if (task?.taskId) {
+          dispatch(getCommentTaskDetaiCommentlAll(task.taskId));
+        }
+      });
+    }
+  };
+
+  const handleDeleteComment = (commentId) => {
+    dispatch(deleteCommentTaskAsync(commentId)).then(() => {
+      if (task?.taskId) {
+        dispatch(getCommentTaskDetaiCommentlAll(task.taskId));
+      }
+    });
+  };
+
+  useEffect(() => {
+    if (task?.taskId) {
+      dispatch(getCommentTaskDetaiCommentlAll(task.taskId));
+    }
+  }, [task, dispatch]);
+
+  const me = localStorage.getItem("user");
+  useEffect(() => {
+    if (me) {
+      const userObject = JSON.parse(me);
+      if (userObject && userObject.content) {
+        setMyCommentInfo(userObject.content);
+      }
+    }
+  }, [me]);
+
   if (!task) return null;
 
   return (
@@ -139,7 +219,79 @@ const ModalDetailTask = ({
             </Col>
           </Row>
           <h3 style={{ paddingTop: "30px" }}>Comments</h3>
-          <p>{task.comments}</p>
+          <Row gutter={16} style={{ marginTop: "20px", marginBottom: "10px" }}>
+            <Col span={2}>
+              <Avatar
+                src={
+                  myCommentInfo.avatar || "https://joeschmoe.io/api/v1/random"
+                }
+              />
+            </Col>
+            <Col span={18}>
+              <Input
+                value={newComment}
+                onChange={(e) => setNewComment(e.target.value)}
+                placeholder="Add a comment"
+              />
+            </Col>
+            <Col span={4}>
+              <Button type="primary" onClick={handleAddComment}>
+                Thêm
+              </Button>
+            </Col>
+          </Row>
+          <List
+            className="comment-list"
+            itemLayout="horizontal"
+            dataSource={[...arrCommentAll].reverse() || []} // Đảo ngược mảng để hiển thị từ mới đến cũ
+            renderItem={(comment) => (
+              <li key={comment.id}>
+                <div
+                  style={{ display: "flex", justifyContent: "space-between" }}
+                >
+                  <div style={{ display: "flex", alignItems: "center" }}>
+                    <Avatar src={comment.user.avatar} alt={comment.user.name} />
+                    <div style={{ marginLeft: 16 }}>
+                      <div>
+                        <strong>{comment.user.name}</strong>
+                        <div>
+                          {editingCommentId === comment.id ? (
+                            <Input
+                              value={editingCommentText}
+                              onChange={(e) =>
+                                setEditingCommentText(e.target.value)
+                              }
+                              onPressEnter={handleSaveEditComment}
+                            />
+                          ) : (
+                            <p style={{ marginBottom: "0" }}>
+                              {comment.contentComment}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    {editingCommentId === comment.id ? (
+                      <CheckOutlined
+                        onClick={handleSaveEditComment}
+                        style={{ marginRight: 16 }}
+                      />
+                    ) : (
+                      <EditOutlined
+                        onClick={() => handleEditComment(comment)}
+                        style={{ marginRight: 16 }}
+                      />
+                    )}
+                    <DeleteOutlined
+                      onClick={() => handleDeleteComment(comment.id)}
+                    />
+                  </div>
+                </div>
+              </li>
+            )}
+          />
         </Col>
         <Col span={12}>
           <form id="taskForm" onSubmit={formik.handleSubmit}>

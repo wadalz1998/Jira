@@ -52,7 +52,6 @@ const TaskContentsReducer = createSlice({
       });
     });
     builder.addCase(setCreateTask.rejected, (state, action) => {
-      // console.error("Error creating task:", action.payload.message);
       Swal.mixin({
         toast: true,
         position: "top-end",
