@@ -39,7 +39,7 @@ const User = () => {
 
   return (
     <div className="user-container userMini">
-      admin
+      Xin chào 
       {user ? (
         <Dropdown style={{ paddingLeft: "5px" }}>
           <Dropdown.Toggle
