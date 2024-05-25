@@ -89,7 +89,16 @@ const EditUserManager = () => {
                     />
                   </AntForm.Item>
                   <AntForm.Item label="Email">
-                    <Field name="email" as={Input} onBlur={handleBlur} />
+                    <Field
+                      name="email"
+                      as={Input}
+                      onBlur={handleBlur}
+                      readOnly
+                      style={{
+                        pointerEvents: "none",
+                        backgroundColor: "#f5f5f5",
+                      }}
+                    />
                     {formSubmitted && touched.email && errors.email && (
                       <div style={{ color: "red" }}>{errors.email}</div>
                     )}
@@ -109,13 +118,21 @@ const EditUserManager = () => {
                       )}
                   </AntForm.Item>
                   <AntForm.Item label="Mật khẩu">
-                    <Field name="password" as={Input.Password} onBlur={handleBlur} />
+                    <Field
+                      name="password"
+                      as={Input.Password}
+                      onBlur={handleBlur}
+                    />
                     {formSubmitted && touched.password && errors.password && (
                       <div style={{ color: "red" }}>{errors.password}</div>
                     )}
                   </AntForm.Item>
                   <AntForm.Item label="Xác nhận mật khẩu">
-                    <Field name="passwordConfirmation" as={Input.Password} onBlur={handleBlur} />
+                    <Field
+                      name="passwordConfirmation"
+                      as={Input.Password}
+                      onBlur={handleBlur}
+                    />
                     {formSubmitted &&
                       touched.passwordConfirmation &&
                       errors.passwordConfirmation && (

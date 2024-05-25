@@ -73,7 +73,7 @@ const NavBar = () => {
         </NavLink>
       </div>
       <hr />
-      <div className="pt-3">
+      {/* <div className="pt-3">
         <NavLink className="nav-link link-dark p-2" to={"/releases"}>
           <i className="fa-solid fa-truck"></i> Release
         </NavLink>
@@ -89,7 +89,7 @@ const NavBar = () => {
         <NavLink className="nav-link link-dark p-2" to={"/component"}>
           <i className="fa-solid fa-box"></i> Components
         </NavLink>
-      </div>
+      </div> */}
       <Drawer
         title="Create a new task"
         width={720}
